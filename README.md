@@ -50,7 +50,8 @@ Built with Java 23, Spring Boot, PostgreSQL, and Docker.
 - Global Exception Handler – Maps exceptions to standardized JSON error responses.
 ---
 ## Error Handling
-All errors return a consistent JSON response structure:
+The API returns structured JSON errors:
+```json
 {
 "status": 404,
 "error": "Not Found",
@@ -58,6 +59,16 @@ All errors return a consistent JSON response structure:
 "path": "/assets/42",
 "timestamp": "2025-10-17T14:32:10Z"
 }
+```
+### HTTP Status Codes
+| Code | When it happens | Example |
+|------|----------------------------------|------------------------------------------|
+| 200 | Successful GET/PUT/DELETE | `GET /assets/1` returns the resource |
+| 201 | Successful creation | `POST /assets` created a new asset |
+| 400 | Validation failed / bad payload | Missing `quantity` for `BUY` |
+| 404 | Resource not found | Asset/Transaction does not exist |
+| 409 | Conflict / duplicate resource | Symbol already exists |
+| 500 | Unexpected server error | Unhandled exception (should be rare) |
 ---
 ## Testing
 Tests include:
@@ -71,20 +82,21 @@ Tests include:
   ./mvnw test
 ---
 ## Installation
-
-### Running Locally
-1. Clone the repository  
-   git clone https://github.com/your-username/portfolio-tracker.git  
-   cd portfolio-tracker
-
-2. Start PostgreSQL with Docker  
-   docker-compose up -d
-
-3. Run the application  
-   ./mvnw spring-boot:run
-
-   The API will be available at: http://localhost:8080  
-   Swagger/OpenAPI docs: http://localhost:8080/swagger-ui.html
+### 1) Clone the repository
+```bash
+git clone https://github.com/OrDavidovitz/portfolio-tracker.git
+cd portfolio-tracker
+```
+### 2) Start PostgreSQL with Docker
+```bash
+docker-compose up -d
+```
+### 3) Run the application
+```bash
+./mvnw spring-boot:run
+```
+API: http://localhost:8080
+Swagger: http://localhost:8080/swagger-ui.html
 ---
 ## Profiles
 - dev – default profile, connects to local PostgreSQL via Docker.
@@ -98,28 +110,12 @@ Tests include:
 - Holding
 - Portfolio
 ---
-## Roadmap
-
-The current system provides a solid foundation for tracking assets, transactions, and portfolio holdings.  
-Planned future enhancements include:
-
-- **Production-ready financial API integration**  
-  Replace the demo Alpha Vantage API with a high-availability data provider (e.g., IEX Cloud, Polygon.io) including retry policies, rate-limit handling, and caching.
-
-- **User authentication & multi-tenancy**  
-  Support multiple users with secure login and per-user portfolio isolation.
-
-- **Portfolio analytics dashboard**  
-  Add endpoints (and a basic UI if extended) for performance charts, asset allocation breakdown, and risk metrics.
-
-- **Extended asset classes**  
-  Support options, mutual funds, and international securities alongside equities, ETFs, crypto, and cash.
-
-- **Deployment & scalability**  
-  Package the app with Docker, define CI/CD pipelines, and prepare for cloud deployment (e.g., Kubernetes, AWS/GCP).
-
-- **Monitoring & observability**  
-  Add metrics, logging, and health checks with Spring Boot Actuator and Prometheus/Grafana integration.
+## Releases
+We use semantic versioning (MAJOR.MINOR.PATCH).
+- **v1.0.0** – Core CRUD for assets, transactions, holdings aggregation, validation, Flyway, Docker, Swagger docs.
+- **v1.1.0** – Portfolio analytics endpoints (holdings, portfolio value, PnL calculations, aggregated positions) and caching for external price lookups.
+- **v1.2.0 (planned)** – User authentication & multi-tenancy.
+- **v2.0.0 (planned)** – Production-grade market data provider, observability, Kubernetes deployment
 ---
 ## License
 MIT License © 2025 Or Davidovitz
